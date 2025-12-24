@@ -12,10 +12,10 @@ ALCANCE DEL PROYECTO
 
 VERSION AUTONOMO 2
 
-import curses
-import random
+    import curses
+    import random
 
-  def main(stdscr):
+    def main(stdscr):
     # Inicializar pantalla
     curses.curs_set(0)  # Ocultar cursor
     sh, sw = stdscr.getmaxyx()
@@ -76,52 +76,52 @@ import random
         # Dibujar serpiente
         w.addch(snake[0][0], snake[0][1], curses.ACS_CKBOARD)
 
-if __name__ == "__main__":
+    if __name__ == "__main__":
     curses.wrapper(main)
 
 
 VERSION MODIFICADA(FINAL)
 
-import curses
-import random
+    import curses
+    import random
 
-CONFIG = {
+    CONFIG = {
     "speed_ms": 100,
     "snake_char": "█",   # funciona en macOS
     "food_char": "●",    # funciona en macOS
     "wall_char": "#",
     "game_over_msg": " GAME OVER ",
-}
+    }
 
-DIRECTIONS = {
+    DIRECTIONS = {
     curses.KEY_UP: (-1, 0),
     curses.KEY_DOWN: (1, 0),
     curses.KEY_LEFT: (0, -1),
     curses.KEY_RIGHT: (0, 1),
-}
+    }
 
-OPPOSITE = {
+    OPPOSITE = {
     curses.KEY_UP: curses.KEY_DOWN,
     curses.KEY_DOWN: curses.KEY_UP,
     curses.KEY_LEFT: curses.KEY_RIGHT,
     curses.KEY_RIGHT: curses.KEY_LEFT,
-}
+    }
 
-def safe_addch(w, y: int, x: int, ch) -> None:
+    def safe_addch(w, y: int, x: int, ch) -> None:
     """Escribe un carácter sin romper el programa si el terminal es pequeño."""
     try:
         w.addch(y, x, ch)
     except curses.error:
         pass
 
-def safe_addstr(w, y: int, x: int, s: str) -> None:
+    def safe_addstr(w, y: int, x: int, s: str) -> None:
     """Escribe texto sin romper el programa si el terminal es pequeño."""
     try:
         w.addstr(y, x, s)
     except curses.error:
         pass
 
-def init_window(stdscr) -> tuple:
+    def init_window(stdscr) -> tuple:
     """Configura la pantalla y devuelve (window, sh, sw)."""
     curses.curs_set(0)
     sh, sw = stdscr.getmaxyx()
@@ -131,14 +131,14 @@ def init_window(stdscr) -> tuple:
     return w, sh, sw
 
 
-def create_initial_snake(sh: int, sw: int) -> list:
+    def create_initial_snake(sh: int, sw: int) -> list:
     """Crea la serpiente inicial como LISTA de TUPLAS (y, x)."""
     y = sh // 2
     x = sw // 2
     return [(y, x), (y, x - 1), (y, x - 2)]
 
 
-def draw_border(w, sh: int, sw: int) -> None:
+    def draw_border(w, sh: int, sw: int) -> None:
     """
     Dibuja el borde de forma compatible con macOS evitando errores en bordes.
     Ojo: en algunos terminales escribir en la última celda puede dar ERR.
@@ -154,7 +154,7 @@ def draw_border(w, sh: int, sw: int) -> None:
         safe_addch(w, y, sw - 1, wall)
 
 
-def random_food_position(sh: int, sw: int, snake: list) -> tuple:
+    def random_food_position(sh: int, sw: int, snake: list) -> tuple:
     """Genera comida (tupla) que no caiga sobre la serpiente."""
     while True:
         pos = (random.randint(1, sh - 2), random.randint(1, sw - 2))
@@ -162,7 +162,7 @@ def random_food_position(sh: int, sw: int, snake: list) -> tuple:
             return pos
 
 
-def get_next_direction(w, current_key: int) -> int:
+    def get_next_direction(w, current_key: int) -> int:
     """
     Lee teclado y decide la dirección:
     - Si no hay tecla (-1), mantiene la actual
@@ -180,13 +180,13 @@ def get_next_direction(w, current_key: int) -> int:
     return current_key
 
 
-def compute_new_head(head: tuple, direction_key: int) -> tuple:
+    def compute_new_head(head: tuple, direction_key: int) -> tuple:
     """Calcula la nueva cabeza con (dy, dx)."""
     dy, dx = DIRECTIONS[direction_key]
     return (head[0] + dy, head[1] + dx)
 
 
-def is_collision(new_head: tuple, snake: list, sh: int, sw: int) -> bool:
+    def is_collision(new_head: tuple, snake: list, sh: int, sw: int) -> bool:
     """Colisión con pared o con el cuerpo."""
     y, x = new_head
     hit_wall = (y <= 0 or y >= sh - 1 or x <= 0 or x >= sw - 1)
@@ -194,7 +194,7 @@ def is_collision(new_head: tuple, snake: list, sh: int, sw: int) -> bool:
     return hit_wall or hit_self
 
 
-def render(w, sh: int, sw: int, snake: list, food: tuple, state: dict) -> None:
+    def render(w, sh: int, sw: int, snake: list, food: tuple, state: dict) -> None:
     """Dibuja todo."""
     w.clear()
     draw_border(w, sh, sw)
@@ -214,7 +214,7 @@ def render(w, sh: int, sw: int, snake: list, food: tuple, state: dict) -> None:
     w.refresh()
 
 
-def show_game_over(w, sh: int, sw: int, state: dict) -> None:
+    def show_game_over(w, sh: int, sw: int, state: dict) -> None:
     """Pantalla final."""
     msg = f"{CONFIG['game_over_msg']} Score: {state['score']} "
     safe_addstr(w, sh // 2, max(0, sw // 2 - len(msg) // 2), msg)
@@ -222,7 +222,7 @@ def show_game_over(w, sh: int, sw: int, state: dict) -> None:
     w.refresh()
     w.getch()
 
-def game_loop(stdscr) -> None:
+    def game_loop(stdscr) -> None:
     w, sh, sw = init_window(stdscr)
 
     # Evitar errores si el terminal es muy pequeño
@@ -263,9 +263,9 @@ def game_loop(stdscr) -> None:
     show_game_over(w, sh, sw, state)
 
 
-def main():
+    def main():
     curses.wrapper(game_loop)
 
 
-if __name__ == "__main__":
+    if __name__ == "__main__":
     main()
