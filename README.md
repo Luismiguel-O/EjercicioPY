@@ -1,8 +1,12 @@
 JUEGO DE LA SERPIENTE (SNAKE)
+
 OBJETIVO DEL PROYECTO
+
   Desarrollar el juego de la serpiente utilizando el lenguaje de programación Python y la librería curses, con el fin de fortalecer el aprendizaje de los fundamentos de la programación, 
   tales como el uso de estructuras de datos (listas, tuplas y diccionarios), funciones, control de flujo y manejo de errores, aplicando estos conceptos de manera práctica en un entorno interactivo y didáctico.
+  
 ALCANCE DEL PROYECTO 
+
   El proyecto comprende el desarrollo de un juego básico en Python con fines educativos y formativos, orientado a la aplicación práctica de los fundamentos de programación y al fortalecimiento de habilidades 
   técnicas y profesionales propias del área informática, limitándose a un entorno de ejecución en consola.
 
@@ -11,7 +15,7 @@ VERSION AUTONOMO 2
 import curses
 import random
 
-def main(stdscr):
+  def main(stdscr):
     # Inicializar pantalla
     curses.curs_set(0)  # Ocultar cursor
     sh, sw = stdscr.getmaxyx()
@@ -81,10 +85,6 @@ VERSION MODIFICADA(FINAL)
 import curses
 import random
 
-# -------------------------
-# ESTRUCTURAS DE DATOS (diccionarios + tuplas + listas)
-# -------------------------
-
 CONFIG = {
     "speed_ms": 100,
     "snake_char": "█",   # funciona en macOS
@@ -93,7 +93,6 @@ CONFIG = {
     "game_over_msg": " GAME OVER ",
 }
 
-# Direcciones como diccionario: tecla -> (dy, dx) (tupla)
 DIRECTIONS = {
     curses.KEY_UP: (-1, 0),
     curses.KEY_DOWN: (1, 0),
@@ -101,18 +100,12 @@ DIRECTIONS = {
     curses.KEY_RIGHT: (0, 1),
 }
 
-# Evitar reversa inmediata
 OPPOSITE = {
     curses.KEY_UP: curses.KEY_DOWN,
     curses.KEY_DOWN: curses.KEY_UP,
     curses.KEY_LEFT: curses.KEY_RIGHT,
     curses.KEY_RIGHT: curses.KEY_LEFT,
 }
-
-
-# -------------------------
-# FUNCIONES (helpers)
-# -------------------------
 
 def safe_addch(w, y: int, x: int, ch) -> None:
     """Escribe un carácter sin romper el programa si el terminal es pequeño."""
@@ -121,14 +114,12 @@ def safe_addch(w, y: int, x: int, ch) -> None:
     except curses.error:
         pass
 
-
 def safe_addstr(w, y: int, x: int, s: str) -> None:
     """Escribe texto sin romper el programa si el terminal es pequeño."""
     try:
         w.addstr(y, x, s)
     except curses.error:
         pass
-
 
 def init_window(stdscr) -> tuple:
     """Configura la pantalla y devuelve (window, sh, sw)."""
@@ -154,12 +145,10 @@ def draw_border(w, sh: int, sw: int) -> None:
     """
     wall = CONFIG["wall_char"]
 
-    # Arriba y abajo (evita última columna en el loop)
     for x in range(sw - 1):
         safe_addch(w, 0, x, wall)
         safe_addch(w, sh - 1, x, wall)
 
-    # Izquierda y derecha (evita última fila en el loop)
     for y in range(sh - 1):
         safe_addch(w, y, 0, wall)
         safe_addch(w, y, sw - 1, wall)
@@ -232,11 +221,6 @@ def show_game_over(w, sh: int, sw: int, state: dict) -> None:
     safe_addstr(w, sh // 2 + 1, max(0, sw // 2 - 12), "Presiona una tecla...")
     w.refresh()
     w.getch()
-
-
-# -------------------------
-# LOOP PRINCIPAL
-# -------------------------
 
 def game_loop(stdscr) -> None:
     w, sh, sw = init_window(stdscr)
